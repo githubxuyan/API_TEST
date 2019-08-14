@@ -1,0 +1,103 @@
+# -*- coding: utf-8 -*-
+# @Time    : 2019/8/5/17:08
+# @Author  : XY
+# @File    : test_main_process.py
+
+import unittest
+from ddt import ddt,data
+from common.my_log import MyLog
+from common.http_request import HttpRequest
+from common.do_excel import DoExcel
+from common import project_path
+from common.read_config import ReadConfig
+import json
+
+#测试登录
+test_data=DoExcel(project_path.case_path,'main').read_data('LoginCASE')#获取测试数据
+my_log=MyLog()
+token=None #定义token初始值为None
+goodid = None
+
+@ddt
+class TestCases(unittest.TestCase):
+
+    def setUp(self):#测试之前的准备工作
+        self.t=DoExcel(project_path.case_path,'main')#写入测试结果的对象
+
+
+    def tearDown(self):
+        pass
+
+    #写用例
+    @data(*test_data)
+    # @unpack
+    def test_cases(self,case):
+        global token
+        global goodid
+        method = case['Method']
+        path = case['Path']
+        a = ReadConfig(project_path.conf_path).get_data('URL', 'sys_url')
+        url = a + path
+        headers = {'Content-Type': "application/json", 'token': token}
+        params = case['Params']
+        if case['Title'] == '分类列表':
+            params=json.loads(params)
+
+        if case['Title'] == '厂商列表':
+            params=eval(params)
+        if case['Title'] == '商品列表':
+            params=eval(params)
+        if case['Title'] == '周期列表':
+            params=json.loads(params)
+
+        if case['Title'] == '上架商品':
+            params={"id":goodid,"isSellWell": "YES"}
+            params = json.dumps(params)
+            # params['id']= goodid
+            # params = eval(params)
+
+
+
+
+        #发起测试
+        my_log.info('---loading---正在测试{}模块里面第【{}】条测试用例：{}'.format(case['Module'],case['CaseId'],case['Title']))
+        my_log.info('-------接口URL:{}'.format(url))
+        my_log.info('-------请求方式:{}'.format(method))
+        my_log.info('-------接口入参:{}'.format(params))
+        my_log.info('-------请求头headers:{}'.format(headers))
+        my_log.info('-------预期结果:{}'.format(case["ExpectedResult"]))
+
+
+
+        resp=HttpRequest().http_request(method,url,params,headers=headers)#传参
+        #发请求后判断是否有token
+        if case['Title']== '后台登录':
+            try:
+                token=resp.json()['token']
+                my_log.info('取到token了')
+            except Exception as  e:
+                my_log.error('-------登录失败，未取到token')
+
+        if case['Title'] == '商品列表':
+            try:
+                goodid = resp.json()['pageList']['data'][0]['id']
+
+                my_log.info('-----goodid:{}'.format(goodid))
+            except Exception as  e:
+                my_log.error('-------未获取取到goodid')
+
+
+        try:
+            self.assertEqual(json.loads(case['ExpectedResult'])['msg'],resp.json()['msg'])
+            self.assertEqual(json.loads(case['ExpectedResult'])['code'], resp.json()['code'])
+            TestResult='Pass'#请注意这里
+        except Exception as e:
+        # except AssertionError as e:
+            TestResult = 'Failed'
+            my_log.error('-------http请求测试用例出错了，错误是：{}'.format(e))
+            raise e#抛出异常
+        finally:
+            self.t.write_back(case['CaseId']+1, 9, resp.text)#请注意这里
+            self.t.write_back(case['CaseId']+1, 10, TestResult)
+
+        my_log.info('-------实际结果：{}'.format(resp.json()))#http发送请求拿到的实际返回值
