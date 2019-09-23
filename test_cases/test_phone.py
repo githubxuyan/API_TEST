@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2019/9/23/下午 2:54
+# @Time    : 2019/9/23/下午 2:22
 # @Author  : XY
-# @File    : test_login.py
+# @File    : test_phone.py
 
 import unittest
 from ddt import ddt,data
@@ -13,7 +13,7 @@ from common.read_config import ReadConfig
 import json
 
 #测试登录
-test_data=DoExcel(project_path.case_path,'login').read_data('CASE')#获取测试数据
+test_data=DoExcel(project_path.case_path,'phone').read_data('CASE')#获取测试数据
 my_log=MyLog()
 token=None #定义token初始值为None
 
@@ -21,7 +21,7 @@ token=None #定义token初始值为None
 class TestCases(unittest.TestCase):
 
     def setUp(self):#测试之前的准备工作
-        self.t=DoExcel(project_path.case_path,'login')#写入测试结果的对象
+        self.t=DoExcel(project_path.case_path,'phone')#写入测试结果的对象
 
     def tearDown(self):
         pass
