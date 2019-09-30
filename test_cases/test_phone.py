@@ -43,6 +43,7 @@ class TestCases(unittest.TestCase):
         my_log.info('-------正在测试【{}】模块里面第【{}】条测试用例：【{}】'.format(case['Module'],case['CaseId'],case['Title']))
         my_log.info('-------接口URL:{}'.format(url))
         my_log.info('-------接口入参:{}'.format(case["Params"]))
+        my_log.info('-------请求方式:{}'.format(method))
         my_log.info('-------请求头headers:{}'.format(headers))
         my_log.info('-------预期结果:{}'.format(case["ExpectedResult"]))
 

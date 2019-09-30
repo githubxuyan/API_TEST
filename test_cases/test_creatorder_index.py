@@ -42,10 +42,7 @@ class TestCases(unittest.TestCase):
         a = ReadConfig(project_path.conf_path).get_data('URL', 'agent_url')
         url = a + path
         params = eval(case['Params'])
-        # 一元夺宝商品详情参数
-
-        # if case['Title'] == '正常登录':
-        #     params = json.loads(case['Params'])
+        # 根据title改参数
         if case['Title'] == '一元商品详情':
             params = {"shopId": shopid,"aid": aid}
 
@@ -56,6 +53,7 @@ class TestCases(unittest.TestCase):
         my_log.info('-------正在测试【{}】模块里面第【{}】条测试用例：【{}】'.format(case['Module'],case['CaseId'],case['Title']))
         my_log.info('-------接口URL:{}'.format(url))
         my_log.info('-------接口入参:{}'.format(params))
+        my_log.info('-------请求方式:{}'.format(method))
         my_log.info('-------请求头headers:{}'.format(headers))
         my_log.info('-------预期结果:{}'.format(case["ExpectedResult"]))
 
