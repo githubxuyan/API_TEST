@@ -7,5 +7,5 @@
 # print(test_data)
 import requests
 
-res=requests.get('http://wapapi.overseas.lihvip.com/isExitPhone.do',params={"phone":"13242045218"})
-print(res.json()['msg'])
+res=requests.get('http://wapapi.overseas.lihvip.com/index/shop.do',params=None)
+print(res.json())
