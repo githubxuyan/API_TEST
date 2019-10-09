@@ -5,8 +5,12 @@
 
 import requests
 
-url = 'http://wapapi.overseas.lihvip.com/index/shop.do'
-headers = {'token': 'QsNUB6sqsEfBRWVuuQy0DpPrv6P8nMiS_GoDoRnpDKg3Jt2Ai56sbxxNboLxv29e0-GUwqj8DYH7111AjDowTw'}
-resp = requests.get(url,headers=headers)
+url = 'http://wapapi.test.lihuitreasure.com/shop/getDoboShopDetail.do'
+headers = {'token': 'N5SsK04JWK8JImrTnLFvX-uoS6MNFcSlli_p9tGrvpYpvJYEOZ8uGSki-NYeHvVFOlaVn1LJgstm6GBO4xNOlQ'}
+params = {
+    "shopId": "175",
+    "aid": "175"
+}
+resp = requests.get(url,params,headers=headers)
 # print(resp.json())
-print(resp.json()['shops'][0]['shopId'])
+print(resp.json()['doboShop']['periodList'][0]['pid'])

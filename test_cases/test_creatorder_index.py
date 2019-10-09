@@ -9,7 +9,6 @@ from common.my_log import MyLog
 from common.http_request import HttpRequest
 from common.do_excel import DoExcel
 from common import project_path
-from common.get_data import GetData
 from common.read_config import ReadConfig
 import json
 
@@ -37,6 +36,7 @@ class TestCases(unittest.TestCase):
         global token
         global aid
         global shopid
+        global pid
         method = case['Method']
         path = case['Path']
         a = ReadConfig(project_path.conf_path).get_data('URL', 'agent_url')
@@ -45,6 +45,10 @@ class TestCases(unittest.TestCase):
         # 根据title改参数
         if case['Title'] == '一元商品详情':
             params = {"shopId": shopid,"aid": aid}
+        if case['Title'] == '一元商品下单':
+            params = eval(case['Params'])
+            params['pid'] == pid
+            my_log.info('chuancanla')
 
         headers = {'token': token}
 
@@ -74,7 +78,13 @@ class TestCases(unittest.TestCase):
                 shopid = resp.json()['shops'][0]['aid']
                 my_log.info('-----------------已获取活动aid:{},shopid:{}'.format(aid,shopid))
             except Exception as e:
-                my_log.info('-----------------未能取到活动aid')
+                my_log.error('-----------------未能取到活动aid')
+        if case['Title'] == '一元商品详情':
+            try:
+                pid = resp.json()['doboShop']['periodList'][0]['pid']
+                my_log.info('-----------------已获取最新周期pid:{}'.format(pid))
+            except Exception as e:
+                my_log.error('-----------------未取到最新周期pid')
 
 
         try:

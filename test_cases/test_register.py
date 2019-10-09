@@ -47,5 +47,5 @@ class TestCases(unittest.TestCase):
             self.t.write_back(case['CaseId']+1, 8, resp.text)#请注意这里
             self.t.write_back(case['CaseId']+1, 9, TestResult)
 
-        my_log.info('实际结果：{}'.format(resp.json()))#http发送请求拿到的实际返回值
+        my_log.info('实际结果：{}'.format(resp.json()))#http发送请求拿到的实际
 
